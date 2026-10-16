@@ -1,0 +1,116 @@
+focusflow:
+  version: "1.0"
+  profile: minimalist_peripheral
+  display:
+    coordinate_space: normalized_usable_field
+    safe_bounds: { x: [-0.82, 0.82], y: [-0.72, 0.72] }
+    keep_clear:
+      central_region: { x: [-0.38, 0.38], y: [-0.30, 0.30] }
+    brightness:
+      default_percent: 12
+      maximum_percent: 25
+      adapt_to_ambient_light: true
+    refresh:
+      visual_updates_hz: 10
+      animations_max_fps: 30
+
+  style:
+    background: transparent
+    color_primary: "#D8F5EA"
+    color_muted: "#91ADA4"
+    color_attention: "#F2C879"
+    typography:
+      family: system_sans
+      weight: medium
+      max_lines: 1
+    effects:
+      shadows: false
+      glow: false
+      flashing: false
+
+  elements:
+    focus_tick:
+      anchor: { x: 0.70, y: -0.56 }
+      form: arc
+      size: { width: 0.10, height: 0.10 }
+      visible_during: focus_session
+      meaning: "Quiet indication that a focus session is active"
+
+    guidance_chip:
+      anchor: { x: 0.62, y: 0.52 }
+      max_width: 0.32
+      text_max_characters: 28
+      duration_ms: 3500
+      cooldown_ms: 30000
+      examples:
+        - "Return to your task"
+        - "Take a short break"
+
+    session_progress:
+      anchor: { x: 0.70, y: -0.56 }
+      form: arc_fill
+      visible_on: glance_or_session_transition
+      duration_ms: 1800
+
+  interaction:
+    glance:
+      action: show_session_progress
+    tap:
+      action: dismiss_guidance
+    long_press:
+      action: toggle_focus_session
+    voice_commands:
+      enabled: optional
+      commands: ["start focus", "pause focus", "end focus"]
+
+  privacy:
+    on_device_focus_state: true
+    store_gaze_history: false
+    show_content_previews: false
+type FocusState = "idle" | "focused" | "drifting" | "break_due";
+
+interface HudInput {
+  state: FocusState;
+  sessionProgress: number; // 0–1
+  userIsMoving: boolean;
+  criticalNotificationActive: boolean;
+  nowMs: number;
+}
+
+interface HudOutput {
+  focusTick: { visible: boolean };
+  progressArc: { visible: boolean; fill: number };
+  guidance: { visible: boolean; text?: string };
+}
+
+let lastGuidanceMs = -Infinity;
+
+export function renderFocusFlow(input: HudInput): HudOutput {
+  const suppressGuidance =
+    input.userIsMoving || input.criticalNotificationActive;
+
+  const message =
+    input.state === "drifting" ? "Return to your task" :
+    input.state === "break_due" ? "Take a short break" :
+    undefined;
+
+  const showGuidance =
+    !suppressGuidance &&
+    message !== undefined &&
+    input.nowMs - lastGuidanceMs >= 30_000;
+
+  if (showGuidance) lastGuidanceMs = input.nowMs;
+
+  return {
+    focusTick: { visible: input.state !== "idle" },
+    progressArc: {
+      visible: false, // Enabled briefly by a glance or session-transition event.
+      fill: Math.max(0, Math.min(1, input.sessionProgress)),
+    },
+    guidance: {
+      visible: showGuidance,
+      text: showGuidance ? message : undefined,
+    },
+  };
+}
+
