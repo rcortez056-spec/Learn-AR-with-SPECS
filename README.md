@@ -20,7 +20,7 @@ FocusFlow is a minimalist, non-intrusive heads-up display (HUD) configuration de
 ## Technical Architecture & State Logic
 
 * **Micro-Guidance State Logic:** Dynamically updates peripheral UI cues based on active workload state, ensuring indicators provide subtle feedback without fracturing deep work concentration.
-* **Dynamic Scaling Parameters:** Leverages `focusflow.yaml` to govern real-world lighting adaptations, maintaining high-contrast readability across variable environments without visual clipping[cite: 3].
+* **Dynamic Scaling Parameters:** Leverages `focusflow.yaml` to govern real-world lighting adaptations, maintaining high-contrast readability across variable environments without visual clipping.
 
 ## Quick Start & Integration
 
