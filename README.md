@@ -1,6 +1,6 @@
 # FocusFlow: Minimalist AR HUD
 
-FocusFlow is a minimalist, non-intrusive heads-up display (HUD) configuration designed for smart eyewear to maximize deep work, reduce cognitive load, and provide real-time ambient micro-guidance without obstructing the natural field of view.
+FocusFlow is a minimalist, non-intrusive heads-up display (HUD) configuration for smart eyewear that maximizes deep work, reduces cognitive load, and provides real-time ambient micro-guidance without obstructing the natural field of view.
 
 ## Repository Structure
 
@@ -25,5 +25,5 @@ FocusFlow is a minimalist, non-intrusive heads-up display (HUD) configuration de
 ## Quick Start & Integration
 
 1. Initialize the Lens Studio project using the base SPECS template.
-2. Load the configuration parameters defined in `focusflow.yaml` to map normalized display boundaries and safe bounds[cite: 3].
+2. Load the configuration parameters defined in `focusflow.yaml` to map normalized display boundaries and safe bounds.
 3. Run local validation tests to verify non-intrusive peripheral placement.
